@@ -27,7 +27,7 @@ class App:
         #init opengl
         glClearColor(0.2, 0.21, 0.25, 1)
         glEnable(GL_DEPTH_TEST)
-        self.shader = self.createShader('vertex.txt', 'fragment.txt')
+        self.shader = self.createShader('shaders/vertex.txt', 'shaders/fragment.txt')
         glUseProgram(self.shader)
         glUniform1i(glGetUniformLocation(self.shader, "imageTexture"), 0)
         #rendering menu
