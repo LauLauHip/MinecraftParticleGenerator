@@ -6,7 +6,7 @@ import pyrr
 from OpenGL.GL.shaders import compileProgram, compileShader
 from PIL import Image
 
-texture = 'Combined.png'
+texture = 'texture.png'
 tex = Image.open(texture)
 tex = tex.transpose(Image.FLIP_TOP_BOTTOM)
 xSize, ySize = tex.size
@@ -34,7 +34,7 @@ class App:
         self.button_1 = pg.Rect(100, 100, 100, 100)
         #rendering opengl
         self.transform = Transform(position=[0, 0, -2.7], eulers=[0, 0, 0])
-        self.cube_mesh = Mesh('Alug_MCPre.obj')
+        self.cube_mesh = Mesh('model.obj')
         self.texture = Material(texture)
         self.generate_holo()
         projection_transform = pyrr.matrix44.create_perspective_projection(
@@ -99,15 +99,16 @@ class App:
     def generate_holo(self):
         with open('out.mcfunction', 'w') as f:
             if len(xyz) == len(st):
-                space = ' ~'
-                multipl = 0.1
-                size = 0.1
+                space = ' ^'
+                multipl = 1
+                size = 1
                 cmds = ''
                 print(len(xyz))
                 for i in range(len(xyz)):
                     x = st[i][0] - 1
                     y = st[i][1] - 1
-                    cmds += 'particle dust ' + str(tex.getpixel((x, y))[0] / 255) + ' ' + str(tex.getpixel((x, y))[1] / 255) + ' ' + str(tex.getpixel((x, y))[2] / 255) + f' {size}' + space + str(xyz[i][0]*multipl) + space + str(xyz[i][1]*multipl) + space + str(xyz[i][2]*multipl) + ' 0 0 0 0 1 force\n'
+                    cmds += f'particle dust{{color:[{tex.getpixel((x, y))[0] / 255:.16f},{tex.getpixel((x, y))[1] / 255:.16f},{tex.getpixel((x, y))[2] / 255:.16f}],scale:{size}}}{space}{xyz[i][0]*multipl:.16f}{space}{xyz[i][1]*multipl:.16f}{space}{xyz[i][2]*multipl:.16f} 0 0 0 0 1 force\n' #for newer versions of the game
+                    #cmds += 'particle dust ' + str(tex.getpixel((x, y))[0] / 255) + ' ' + str(tex.getpixel((x, y))[1] / 255) + ' ' + str(tex.getpixel((x, y))[2] / 255) + f' {size}' + space + str(xyz[i][0]*multipl) + space + str(xyz[i][1]*multipl) + space + str(xyz[i][2]*multipl) + ' 0 0 0 0 1 force\n'
                 f.write(cmds)
     
     def quit(self):
